@@ -2,9 +2,9 @@ export default function Dashboard() {
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
-      <aside className="w-24 bg-surface border-r border-divider">
+      <aside className="fixed left-0 top-0 h-screen w-24 shrink-0 bg-surface border-r border-divider">
         <nav className="h-full">
-          <ul className="w-full flex flex-col">
+          <ul className="flex h-full w-full flex-col">
             <li className="active w-full flex flex-col items-center justify-center py-4">
               <svg
                 className="w-16 h-16 text-text"
@@ -54,7 +54,7 @@ export default function Dashboard() {
                   </g>
                 </g>
               </svg>
-              <span className="text-sm">Account</span>
+              <span className="nav-text">Account</span>
             </li>
 
             {/* dashboard icon */}
@@ -81,7 +81,7 @@ export default function Dashboard() {
                   </g>
                 </g>
               </svg>
-              <span className="text-sm">Dashboard</span>
+              <span className="nav-text">Dashboard</span>
             </li>
 
             {/* course icon */}
@@ -105,7 +105,7 @@ export default function Dashboard() {
                   </g>
                 </g>
               </svg>{" "}
-              <span className="text-sm">Course</span>
+              <span className="nav-text">Course</span>
             </li>
 
             {/* calendar icon */}
@@ -134,7 +134,7 @@ export default function Dashboard() {
                   </g>
                 </g>
               </svg>
-              <span className="text-sm">Calendar</span>
+              <span className="nav-text">Calendar</span>
             </li>
 
             {/* inbox icon */}
@@ -163,7 +163,7 @@ export default function Dashboard() {
                   </g>
                 </g>
               </svg>
-              <span className="text-sm">Inbox</span>
+              <span className="nav-text">Inbox</span>
             </li>
 
             <li className="w-full flex flex-col items-center justify-center gap-1 py-3">
@@ -191,7 +191,7 @@ export default function Dashboard() {
                   </g>
                 </g>
               </svg>
-              <span className="text-sm">History</span>
+              <span className="nav-text">History</span>
             </li>
 
             {/* help icon */}
@@ -220,7 +220,7 @@ export default function Dashboard() {
                   </g>
                 </g>
               </svg>{" "}
-              <span className="text-sm">Help</span>
+              <span className="nav-text">Help</span>
             </li>
           </ul>
         </nav>
@@ -228,7 +228,8 @@ export default function Dashboard() {
 
       {/* Main area */}
 
-      <main className="flex-1 p-6 bg-background text-text mt-2">
+      <main className="ml-24 flex-1 p-6 bg-background text-text mt-2">
+        {" "}
         <div className="space-y-4">
           <div className="flex border border-divider bg-surface">
             <aside className="w-18 bg-surface border-r border-divider flex items-center justify-center">
@@ -284,7 +285,6 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-
         {/* Header */}
         <div className="flex items-center justify-between mt-10 mb-2">
           {/* Left */}
@@ -369,16 +369,15 @@ export default function Dashboard() {
             </svg>
           </div>
         </div>
-
         {/* Content */}
         <div className="space-y-4">
           {/* Card */}{" "}
           <p className="text-sm border-t border-divider text-text-secondary font-semibold mt-4 pt-4">
             Monday, 20th October 2025
           </p>
-              <div className="flex border-t border-b border-divider bg-surface">
-              <aside className="w-64 bg-surface-variant border-r border-divider flex items-center justify-center">
-                <p className="text-accent text-sm text-center font-bold">
+          <div className="flex border-t border-b border-divider bg-surface">
+            <aside className="w-64 bg-surface-variant border-r border-divider flex items-center justify-center">
+              <p className="text-accent text-sm text-center font-bold">
                 DIGITAL MEDIA FOR BUSINESS
                 <br />
                 XX00001 25/26

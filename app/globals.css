@@ -13,6 +13,7 @@
   /* fonts */
   --font-primary: "Inter", sans-serif;
   --font-accessible: "Lexend", sans-serif;
+  --font-scale: 1;
 }
 [data-font="accessible"] {
   --font-primary: var(--font-accessible);
@@ -65,8 +66,20 @@ body {
   background: var(--background);
   color: var(--text);
   font-family: var(--font-primary);
+  font-size: calc(14px * var(--font-scale));
 }
-
+h1 {
+  font-size: calc(30px * var(--font-scale));
+}
+h2 {
+  font-size: calc(22px * var(--font-scale));
+}
+p {
+  font-size: calc(14px * var(--font-scale));
+}
+.nav-text, .assist-option-text {
+  font-size: calc(14px * var(--font-scale));
+}
 .active {
   background: var(--surface-variant);
   color: var(--accent);

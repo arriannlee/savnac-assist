@@ -15,7 +15,7 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
   const [darkMode, setDarkMode] = useState(false);
   const [highContrast, setHighContrast] = useState(false);
   const [dyslexicFont, setDyslexicFont] = useState(false);
-
+  const [fontStep, setFontStep] = useState(0); // 0 = normal
   useEffect(() => {
     const root = document.documentElement;
 
@@ -39,6 +39,32 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
       root.removeAttribute("data-font");
     }
   }, [dyslexicFont]);
+
+  useEffect(() => {
+    const getFontScale = (step: number) => {
+      switch (step) {
+        case -2:
+          return 0.9;
+        case -1:
+          return 0.95;
+        case 0:
+          return 1;
+        case 1:
+          return 1.15;
+        case 2:
+          return 1.3;
+        default:
+          return 1;
+      }
+    };
+
+    const scale = getFontScale(fontStep);
+
+    document.documentElement.style.setProperty(
+      "--font-scale",
+      scale.toString(),
+    );
+  }, [fontStep]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
@@ -64,7 +90,7 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
 
           {(step === "welcome" || step === "recommendations") && (
             <>
-              <p className="mb-6 max-w-3xl text-sm leading-7 text-text-secondary">
+              <p className="mb-6 max-w-3xl assist-option-text leading-7 text-text-secondary">
                 Before you get started, let’s make things a bit easier to read
                 and navigate so everything works better for you.
                 <br />
@@ -75,12 +101,12 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
               <input
                 type="text"
                 placeholder="Describe any challenges you face... type help for suggestions"
-                className="mb-5 w-full max-w-2xl rounded-md border border-divider bg-surface-variant px-4 py-3 text-sm text-text placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-accent"
+                className="mb-5 w-full max-w-2xl rounded-md border border-divider bg-surface-variant px-4 py-3 assist-option-text text-text placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-accent"
               />
 
               <button
                 onClick={() => setStep("recommendations")}
-                className="mb-5 w-full max-w-2xl rounded-md bg-accent px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+                className="mb-5 w-full max-w-2xl rounded-md bg-accent px-6 py-3 assist-option-text font-semibold text-white transition hover:opacity-90"
               >
                 {step === "recommendations"
                   ? "Update Recommendations"
@@ -91,24 +117,24 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
 
           {step === "recommendations" && (
             <>
-              <p className="mb-5 text-sm text-text-secondary">
+              <p className="mb-5 assist-option-text text-text-secondary">
                 Based on your input, here’s what might help:
               </p>
 
               <div className="mb-5 flex items-center justify-center gap-4">
                 <button
                   onClick={() => setStep("manual")}
-                  className="rounded-md border border-accent bg-background px-8 py-3 text-sm font-semibold text-accent transition hover:opacity-90"
+                  className="rounded-md border border-accent bg-background px-8 py-3 assist-option-text font-semibold text-accent transition hover:opacity-90"
                 >
                   Preview
                 </button>
 
-                <button className="rounded-md bg-accent px-8 py-3 text-sm font-semibold text-white transition hover:opacity-90">
+                <button className="rounded-md bg-accent px-8 py-3 assist-option-text font-semibold text-white transition hover:opacity-90">
                   Apply Changes
                 </button>
               </div>
 
-              <p className="text-sm text-text-secondary opacity-80">
+              <p className="assist-option-text text-text-secondary opacity-80">
                 Prefer to adjust things yourself?{" "}
                 <button
                   onClick={() => setStep("manual")}
@@ -121,7 +147,7 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
           )}
 
           {step === "welcome" && (
-            <p className="text-sm text-text-secondary opacity-80">
+            <p className="assist-option-text text-text-secondary opacity-80">
               Prefer to adjust things yourself?{" "}
               <button
                 onClick={() => setStep("manual")}
@@ -134,7 +160,7 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
 
           {step === "manual" && (
             <>
-              <p className="mb-4 max-w-2xl text-sm leading-6 text-text-secondary">
+              <p className="mb-4 max-w-2xl assist-option-text leading-6 text-text-secondary">
                 Before you get started, you can adjust settings to make things
                 easier to read and navigate so everything works better for you.
               </p>
@@ -143,16 +169,18 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
                 {/* Text size */}
 
                 <div className="flex items-center justify-between rounded-xl bg-surface-variant px-5 py-4">
-                  <span className="text-sm text-text">Text size</span>
+                  <span className="assist-option-text text-text">Text size</span>
 
                   <div className="flex w-[55%] items-center gap-3">
-                    <span className="text-sm text-text">A</span>
+                    <span className="assist-option-text text-text">A</span>
 
                     <input
                       type="range"
-                      min="1"
-                      max="5"
-                      defaultValue="3"
+                      min={-2}
+                      max={2}
+                      step={1}
+                      value={fontStep}
+                      onChange={(e) => setFontStep(parseInt(e.target.value))}
                       className="slider w-full"
                     />
 
@@ -163,7 +191,7 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
                 {/* High contrast */}
 
                 <div className="flex items-center justify-between rounded-xl bg-surface-variant px-5 py-4">
-                  <span className="text-sm text-text">High contrast</span>
+                  <span className="assist-option-text text-text">High contrast</span>
                   <input
                     type="checkbox"
                     className="toggle-switch"
@@ -175,7 +203,7 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
                 {/* Dyslexic font */}
 
                 <div className="flex items-center justify-between rounded-xl bg-surface-variant px-5 py-4">
-                  <span className="text-sm text-text">
+                  <span className="assist-option-text text-text">
                     Dyslexic friendly font
                   </span>
                   <input
@@ -189,7 +217,7 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
                 {/* Dark mode */}
 
                 <div className="flex items-center justify-between rounded-xl bg-surface-variant px-5 py-4">
-                  <span className="text-sm text-text">Dark mode</span>
+                  <span className="assist-option-text text-text">Dark mode</span>
                   <input
                     type="checkbox"
                     checked={darkMode}
@@ -201,10 +229,10 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
                 {/* Language */}
 
                 <div className="flex items-center justify-between rounded-xl bg-surface-variant px-5 py-3">
-                  <span className="text-sm text-text">Language selection</span>
+                  <span className="assist-option-text text-text">Language selection</span>
 
                   <div className="relative">
-                    <select className="min-w-[140px] appearance-none rounded-md border border-divider bg-background px-3 py-1.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-accent">
+                    <select className="min-w-[140px] appearance-none rounded-md border border-divider bg-background px-3 py-1.5 assist-option-text text-text focus:outline-none focus:ring-2 focus:ring-accent">
                       <option>English UK</option>
                       <option>Spanish</option>
                     </select>
@@ -217,12 +245,12 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
               </div>
 
               <div className="mb-5 flex items-center justify-center gap-4">
-                <button className="rounded-md bg-accent px-8 py-3 text-sm font-semibold text-white transition hover:opacity-90">
+                <button className="rounded-md bg-accent px-8 py-3 assist-option-text font-semibold text-white transition hover:opacity-90">
                   Apply Changes
                 </button>
               </div>
 
-              <p className="text-sm text-text-secondary opacity-80">
+              <p className="assist-option-text text-text-secondary opacity-80">
                 Need assistance?{" "}
                 <button
                   onClick={() => setStep("welcome")}
