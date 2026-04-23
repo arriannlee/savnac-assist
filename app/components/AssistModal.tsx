@@ -15,7 +15,22 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
   const [darkMode, setDarkMode] = useState(false);
   const [highContrast, setHighContrast] = useState(false);
   const [dyslexicFont, setDyslexicFont] = useState(false);
-  const [fontStep, setFontStep] = useState(0); // 0 = normal
+  const [fontStep, setFontStep] = useState(0);
+  const [settingsSaved, setSettingsSaved] = useState(false);
+
+  useEffect(() => {
+    const savedSettings = localStorage.getItem("savnac-accessibility-settings");
+
+    if (!savedSettings) return;
+
+    const parsedSettings = JSON.parse(savedSettings);
+
+    setDarkMode(parsedSettings.darkMode ?? false);
+    setHighContrast(parsedSettings.highContrast ?? false);
+    setDyslexicFont(parsedSettings.dyslexicFont ?? false);
+    setFontStep(parsedSettings.fontStep ?? 0);
+  }, []);
+
   useEffect(() => {
     const root = document.documentElement;
 
@@ -66,6 +81,31 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
     );
   }, [fontStep]);
 
+  useEffect(() => {
+    if (!settingsSaved) return;
+
+    const timer = setTimeout(() => {
+      setSettingsSaved(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [settingsSaved]);
+
+  const handleApplyChanges = () => {
+    const settings = {
+      darkMode,
+      highContrast,
+      dyslexicFont,
+      fontStep,
+    };
+
+    localStorage.setItem(
+      "savnac-accessibility-settings",
+      JSON.stringify(settings),
+    );
+
+    setSettingsSaved(true);
+  };
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl bg-background px-10 py-8 shadow-xl">
@@ -169,7 +209,9 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
                 {/* Text size */}
 
                 <div className="flex items-center justify-between rounded-xl bg-surface-variant px-5 py-4">
-                  <span className="assist-option-text text-text">Text size</span>
+                  <span className="assist-option-text text-text">
+                    Text size
+                  </span>
 
                   <div className="flex w-[55%] items-center gap-3">
                     <span className="assist-option-text text-text">A</span>
@@ -191,7 +233,9 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
                 {/* High contrast */}
 
                 <div className="flex items-center justify-between rounded-xl bg-surface-variant px-5 py-4">
-                  <span className="assist-option-text text-text">High contrast</span>
+                  <span className="assist-option-text text-text">
+                    High contrast
+                  </span>
                   <input
                     type="checkbox"
                     className="toggle-switch"
@@ -217,7 +261,9 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
                 {/* Dark mode */}
 
                 <div className="flex items-center justify-between rounded-xl bg-surface-variant px-5 py-4">
-                  <span className="assist-option-text text-text">Dark mode</span>
+                  <span className="assist-option-text text-text">
+                    Dark mode
+                  </span>
                   <input
                     type="checkbox"
                     checked={darkMode}
@@ -229,7 +275,9 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
                 {/* Language */}
 
                 <div className="flex items-center justify-between rounded-xl bg-surface-variant px-5 py-3">
-                  <span className="assist-option-text text-text">Language selection</span>
+                  <span className="assist-option-text text-text">
+                    Language selection
+                  </span>
 
                   <div className="relative">
                     <select className="min-w-[140px] appearance-none rounded-md border border-divider bg-background px-3 py-1.5 assist-option-text text-text focus:outline-none focus:ring-2 focus:ring-accent">
@@ -245,10 +293,19 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
               </div>
 
               <div className="mb-5 flex items-center justify-center gap-4">
-                <button className="rounded-md bg-accent px-8 py-3 assist-option-text font-semibold text-white transition hover:opacity-90">
+                <button
+                  onClick={handleApplyChanges}
+                  className="rounded-md bg-accent px-8 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+                >
                   Apply Changes
                 </button>
               </div>
+
+              {settingsSaved && (
+                <p className="mt-1 mb-2 text-sm text-text-secondary">
+                  Preferences saved.
+                </p>
+              )}
 
               <p className="assist-option-text text-text-secondary opacity-80">
                 Need assistance?{" "}
