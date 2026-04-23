@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useState } from "react";
 
 type AssistModalProps = {
@@ -11,6 +12,17 @@ type AssistStep = "welcome" | "recommendations" | "manual";
 export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
   const name = "";
   const [step, setStep] = useState<AssistStep>("welcome");
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    const root = document.documentElement;
+
+    if (darkMode) {
+      root.setAttribute("data-theme", "dark");
+    } else {
+      root.removeAttribute("data-theme"); // falls back to :root (light)
+    }
+  }, [darkMode]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
@@ -153,8 +165,12 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
 
                 <div className="flex items-center justify-between rounded-xl bg-surface-variant px-5 py-4">
                   <span className="text-sm text-text">Dark mode</span>
-
-                  <input type="checkbox" className="toggle-switch" />
+                  <input
+                    type="checkbox"
+                    checked={darkMode}
+                    onChange={(e) => setDarkMode(e.target.checked)}
+                    className="toggle-switch"
+                  />{" "}
                 </div>
 
                 {/* Language */}
@@ -176,8 +192,6 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
               </div>
 
               <div className="mb-5 flex items-center justify-center gap-4">
-
-
                 <button className="rounded-md bg-accent px-8 py-3 text-sm font-semibold text-white transition hover:opacity-90">
                   Apply Changes
                 </button>

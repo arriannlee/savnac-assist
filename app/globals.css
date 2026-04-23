@@ -18,12 +18,12 @@
 /* dark */
 [data-theme="dark"] {
   --background: #121212;
-  --accent: #8b7bff;
+  --accent: #5a4ae0;
   --surface: #1e1e1e;
   --surface-variant: #2a2a2a;
   --text: #ffffff;
   --text-secondary: #b3b3b3;
-  --divider: #2a2a2a;
+  --divider: #121212;
 }
 
 /* high contrast light */
