@@ -2,19 +2,23 @@
 
 import { useState } from "react";
 import Dashboard from "./components/Dashboard";
+import Panel from "./components/Panel";
 import AssistModal from "./components/AssistModal";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(true); // true for testing
+  const [language, setLanguage] = useState("en");
 
   return (
     <>
-      <Dashboard />
-
-{isModalOpen && (
-
-  <AssistModal setIsModalOpen={setIsModalOpen} />
-
-)}    </>
+      {language === "en" ? <Dashboard /> : <Panel />}{" "}
+      {isModalOpen && (
+        <AssistModal
+          setIsModalOpen={setIsModalOpen}
+          language={language}
+          setLanguage={setLanguage}
+        />
+      )}
+    </>
   );
 }

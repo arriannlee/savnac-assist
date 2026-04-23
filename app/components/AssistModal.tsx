@@ -5,11 +5,17 @@ import { useState } from "react";
 
 type AssistModalProps = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  language: string;
+  setLanguage: React.Dispatch<React.SetStateAction<string>>;
 };
 
 type AssistStep = "welcome" | "recommendations" | "manual";
 
-export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
+export default function AssistModal({
+  setIsModalOpen,
+  language,
+  setLanguage,
+}: AssistModalProps) {
   const name = "";
   const [step, setStep] = useState<AssistStep>("welcome");
   const [darkMode, setDarkMode] = useState(false);
@@ -17,6 +23,65 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
   const [dyslexicFont, setDyslexicFont] = useState(false);
   const [fontStep, setFontStep] = useState(0);
   const [settingsSaved, setSettingsSaved] = useState(false);
+
+  const modalText = {
+    en: {
+      welcome: `Hi ${name || "there"}, welcome to B&FC! 👋`,
+      intro:
+        "Before you get started, let’s make things a bit easier to read and navigate so everything works better for you.",
+      question:
+        "What challenges do you experience when reading or navigating online systems?",
+      placeholder:
+        "Describe any challenges you face... type help for suggestions",
+      showRecommendations: "Show Recommendations",
+      updateRecommendations: "Update Recommendations",
+      basedOnInput: "Based on your input, here’s what might help:",
+      preview: "Preview",
+      apply: "Apply Changes",
+      preferManual: "Prefer to adjust things yourself?",
+      needAssistance: "Need assistance?",
+      clickHere: "Click here!",
+      manualIntro:
+        "Before you get started, you can adjust settings to make things easier to read and navigate so everything works better for you.",
+      textSize: "Text size",
+      highContrast: "High contrast",
+      dyslexicFont: "Dyslexic friendly font",
+      darkMode: "Dark mode",
+      language: "Language selection",
+      saved: "Preferences saved.",
+      english: "English UK",
+      spanish: "Spanish",
+    },
+    es: {
+      welcome: `Hola ${name || "there"}, bienvenido a B&FC 👋`,
+      intro:
+        "Antes de comenzar, ajustemos la pantalla para que sea más fácil de leer y navegar.",
+      question:
+        "¿Qué dificultades tienes al leer o navegar por sistemas en línea?",
+      placeholder:
+        "Describe cualquier dificultad... escribe ayuda para sugerencias",
+      showRecommendations: "Mostrar recomendaciones",
+      updateRecommendations: "Actualizar recomendaciones",
+      basedOnInput: "Según tu respuesta, esto podría ayudarte:",
+      preview: "Vista previa",
+      apply: "Aplicar cambios",
+      preferManual: "¿Prefieres ajustar las opciones tú mismo?",
+      needAssistance: "¿Necesitas ayuda?",
+      clickHere: "Haz clic aquí",
+      manualIntro:
+        "Antes de comenzar, puedes ajustar la configuración para facilitar la lectura y la navegación.",
+      textSize: "Tamaño del texto",
+      highContrast: "Alto contraste",
+      dyslexicFont: "Fuente para dislexia",
+      darkMode: "Modo oscuro",
+      language: "Selección de idioma",
+      saved: "Preferencias guardadas.",
+      english: "Inglés Reino Unido",
+      spanish: "Español",
+    },
+  };
+
+  const t = modalText[language as "en" | "es"];
 
   useEffect(() => {
     const savedSettings = localStorage.getItem("savnac-accessibility-settings");
@@ -106,6 +171,7 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
 
     setSettingsSaved(true);
   };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl bg-background px-10 py-8 shadow-xl">
@@ -124,23 +190,19 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
             className="mb-4 h-auto w-64"
           />
 
-          <p className="mb-4 text-base font-medium text-text">
-            Hi {name || "there"}, welcome to B&FC! 👋
-          </p>
+          <p className="mb-4 text-base font-medium text-text">{t.welcome}</p>
 
           {(step === "welcome" || step === "recommendations") && (
             <>
               <p className="mb-6 max-w-3xl assist-option-text leading-7 text-text-secondary">
-                Before you get started, let’s make things a bit easier to read
-                and navigate so everything works better for you.
+                {t.intro}
                 <br />
-                What challenges do you experience when reading or navigating
-                online systems?
+                {t.question}
               </p>
 
               <input
                 type="text"
-                placeholder="Describe any challenges you face... type help for suggestions"
+                placeholder={t.placeholder}
                 className="mb-5 w-full max-w-2xl rounded-md border border-divider bg-surface-variant px-4 py-3 assist-option-text text-text placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-accent"
               />
 
@@ -149,8 +211,8 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
                 className="mb-5 w-full max-w-2xl rounded-md bg-accent px-6 py-3 assist-option-text font-semibold text-white transition hover:opacity-90"
               >
                 {step === "recommendations"
-                  ? "Update Recommendations"
-                  : "Show Recommendations"}
+                  ? t.updateRecommendations
+                  : t.showRecommendations}
               </button>
             </>
           )}
@@ -180,7 +242,7 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
                   onClick={() => setStep("manual")}
                   className="text-text underline underline-offset-2"
                 >
-                  Click here!
+                  {t.clickHere}
                 </button>
               </p>
             </>
@@ -188,12 +250,12 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
 
           {step === "welcome" && (
             <p className="assist-option-text text-text-secondary opacity-80">
-              Prefer to adjust things yourself?{" "}
+              {t.preferManual}{" "}
               <button
                 onClick={() => setStep("manual")}
                 className="text-text underline underline-offset-2"
               >
-                Click here!
+                {t.clickHere}
               </button>
             </p>
           )}
@@ -201,8 +263,7 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
           {step === "manual" && (
             <>
               <p className="mb-4 max-w-2xl assist-option-text leading-6 text-text-secondary">
-                Before you get started, you can adjust settings to make things
-                easier to read and navigate so everything works better for you.
+                {t.manualIntro}
               </p>
 
               <div className="mb-4 flex w-full max-w-3xl flex-col gap-3 text-left">
@@ -210,7 +271,7 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
 
                 <div className="flex items-center justify-between rounded-xl bg-surface-variant px-5 py-4">
                   <span className="assist-option-text text-text">
-                    Text size
+                    {t.textSize}
                   </span>
 
                   <div className="flex w-[55%] items-center gap-3">
@@ -234,7 +295,7 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
 
                 <div className="flex items-center justify-between rounded-xl bg-surface-variant px-5 py-4">
                   <span className="assist-option-text text-text">
-                    High contrast
+                    {t.highContrast}
                   </span>
                   <input
                     type="checkbox"
@@ -248,7 +309,7 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
 
                 <div className="flex items-center justify-between rounded-xl bg-surface-variant px-5 py-4">
                   <span className="assist-option-text text-text">
-                    Dyslexic friendly font
+                    {t.dyslexicFont}
                   </span>
                   <input
                     type="checkbox"
@@ -262,7 +323,7 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
 
                 <div className="flex items-center justify-between rounded-xl bg-surface-variant px-5 py-4">
                   <span className="assist-option-text text-text">
-                    Dark mode
+                    {t.darkMode}
                   </span>
                   <input
                     type="checkbox"
@@ -276,13 +337,17 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
 
                 <div className="flex items-center justify-between rounded-xl bg-surface-variant px-5 py-3">
                   <span className="assist-option-text text-text">
-                    Language selection
+                    {t.language}
                   </span>
 
                   <div className="relative">
-                    <select className="min-w-[140px] appearance-none rounded-md border border-divider bg-background px-3 py-1.5 assist-option-text text-text focus:outline-none focus:ring-2 focus:ring-accent">
-                      <option>English UK</option>
-                      <option>Spanish</option>
+                    <select
+                      className="min-w-[140px] appearance-none rounded-md border border-divider bg-background px-3 py-1.5 assist-option-text text-text focus:outline-none focus:ring-2 focus:ring-accent"
+                      value={language}
+                      onChange={(e) => setLanguage(e.target.value)}
+                    >
+                      <option value="en">{t.english}</option>
+                      <option value="es">{t.spanish}</option>
                     </select>
 
                     <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-text-secondary">
@@ -297,23 +362,23 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
                   onClick={handleApplyChanges}
                   className="rounded-md bg-accent px-8 py-3 text-sm font-semibold text-white transition hover:opacity-90"
                 >
-                  Apply Changes
+                  {t.apply}
                 </button>
               </div>
 
               {settingsSaved && (
                 <p className="mt-1 mb-2 text-sm text-text-secondary">
-                  Preferences saved.
+                  {t.saved}
                 </p>
               )}
 
               <p className="assist-option-text text-text-secondary opacity-80">
-                Need assistance?{" "}
+                {t.needAssistance}{" "}
                 <button
                   onClick={() => setStep("welcome")}
                   className="text-text underline underline-offset-2"
                 >
-                  Click here!
+                  {t.clickHere}
                 </button>
               </p>
             </>
