@@ -125,7 +125,7 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
                       min="1"
                       max="5"
                       defaultValue="3"
-                      className="w-full accent-accent"
+                      className="slider w-full"
                     />
 
                     <span className="text-xl text-text">A</span>
@@ -136,8 +136,7 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
 
                 <div className="flex items-center justify-between rounded-xl bg-surface-variant px-5 py-4">
                   <span className="text-sm text-text">High contrast</span>
-
-                  <input type="checkbox" className="h-6 w-11 accent-accent" />
+                  <input type="checkbox" className="toggle-switch" />
                 </div>
 
                 {/* Dyslexic font */}
@@ -147,7 +146,7 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
                     Dyslexic friendly font
                   </span>
 
-                  <input type="checkbox" className="h-6 w-11 accent-accent" />
+                  <input type="checkbox" className="toggle-switch" />
                 </div>
 
                 {/* Dark mode */}
@@ -155,29 +154,29 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
                 <div className="flex items-center justify-between rounded-xl bg-surface-variant px-5 py-4">
                   <span className="text-sm text-text">Dark mode</span>
 
-                  <input type="checkbox" className="h-6 w-11 accent-accent" />
+                  <input type="checkbox" className="toggle-switch" />
                 </div>
 
                 {/* Language */}
 
-                <div className="flex items-center justify-between rounded-xl bg-surface-variant px-5 py-4">
+                <div className="flex items-center justify-between rounded-xl bg-surface-variant px-5 py-3">
                   <span className="text-sm text-text">Language selection</span>
 
-                  <select className="rounded-md bg-background px-3 py-2 text-sm text-text outline-none">
-                    <option>English UK</option>
+                  <div className="relative">
+                    <select className="min-w-[140px] appearance-none rounded-md border border-divider bg-background px-3 py-1.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-accent">
+                      <option>English UK</option>
+                      <option>Spanish</option>
+                    </select>
 
-                    <option>Spanish</option>
-                  </select>
+                    <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-text-secondary">
+                      ▼
+                    </span>
+                  </div>
                 </div>
               </div>
 
               <div className="mb-5 flex items-center justify-center gap-4">
-                <button
-                  onClick={() => setStep("recommendations")}
-                  className="rounded-md border border-accent bg-background px-8 py-3 text-sm font-semibold text-accent transition hover:opacity-90"
-                >
-                  Preview
-                </button>
+
 
                 <button className="rounded-md bg-accent px-8 py-3 text-sm font-semibold text-white transition hover:opacity-90">
                   Apply Changes
