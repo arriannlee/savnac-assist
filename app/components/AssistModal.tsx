@@ -14,6 +14,7 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
   const [step, setStep] = useState<AssistStep>("welcome");
   const [darkMode, setDarkMode] = useState(false);
   const [highContrast, setHighContrast] = useState(false);
+  const [dyslexicFont, setDyslexicFont] = useState(false);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -28,6 +29,16 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
       root.removeAttribute("data-theme"); // default light
     }
   }, [darkMode, highContrast]);
+
+  useEffect(() => {
+    const root = document.documentElement;
+
+    if (dyslexicFont) {
+      root.setAttribute("data-font", "accessible");
+    } else {
+      root.removeAttribute("data-font");
+    }
+  }, [dyslexicFont]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
@@ -167,8 +178,12 @@ export default function AssistModal({ setIsModalOpen }: AssistModalProps) {
                   <span className="text-sm text-text">
                     Dyslexic friendly font
                   </span>
-
-                  <input type="checkbox" className="toggle-switch" />
+                  <input
+                    type="checkbox"
+                    checked={dyslexicFont}
+                    onChange={(e) => setDyslexicFont(e.target.checked)}
+                    className="toggle-switch"
+                  />{" "}
                 </div>
 
                 {/* Dark mode */}

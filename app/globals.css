@@ -14,6 +14,9 @@
   --font-primary: "Inter", sans-serif;
   --font-accessible: "Lexend", sans-serif;
 }
+[data-font="accessible"] {
+  --font-primary: var(--font-accessible);
+}
 
 /* dark */
 [data-theme="dark"] {
