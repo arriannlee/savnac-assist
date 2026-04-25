@@ -376,7 +376,7 @@ export default function AssistModal({
   };
 
   // Rotate through prompt hints every 3 seconds
-  
+
   useEffect(() => {
     const timer = setInterval(() => {
       setHintIndex((current) => (current + 1) % t.promptHints.length);
@@ -406,7 +406,7 @@ export default function AssistModal({
           <img
             src="/images/welcome.svg"
             alt="Welcome image"
-            className="mb-4 h-auto w-64"
+            className="mb-4 h-auto w-54"
           />
 
           <p className="mb-4 text-base font-medium text-text">{t.welcome}</p>
