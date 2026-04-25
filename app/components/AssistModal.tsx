@@ -39,6 +39,7 @@ export default function AssistModal({
     useState<AccessibilitySettings | null>(null);
   const [hintIndex, setHintIndex] = useState(0);
   const [inputError, setInputError] = useState("");
+  const [aiError, setAiError] = useState("");
 
   const modalText = {
     en: {
@@ -52,6 +53,10 @@ export default function AssistModal({
         "I find low contrast hard to read...",
       ],
       inputError: "Please describe what you need help with first.",
+      aiUnavailable:
+        "Savnac Assist is temporarily unavailable. Please try again or use manual settings.",
+      aiFailed:
+        "Something went wrong while checking your preferences. Please try again.",
       showRecommendations: "Show Recommendations",
       updateRecommendations: "Update Recommendations",
       basedOnInput: "Based on your input, here’s what might help:",
@@ -86,6 +91,10 @@ export default function AssistModal({
         "Me cuesta leer con poco contraste...",
       ],
       inputError: "Describe primero con qué necesitas ayuda.",
+      aiUnavailable:
+        "Savnac Assist no está disponible temporalmente. Inténtalo de nuevo o usa la configuración manual.",
+      aiFailed:
+        "Algo salió mal al revisar tus preferencias. Inténtalo de nuevo.",
       showRecommendations: "Mostrar recomendaciones",
       updateRecommendations: "Actualizar recomendaciones",
       basedOnInput: "Según tu respuesta, esto podría ayudarte:",
@@ -203,10 +212,12 @@ export default function AssistModal({
   // Function to call AI recommendations
 
   const handleShowRecommendations = async () => {
+    setAiError("");
+
     const trimmedInput = userNeed.trim();
 
-    if (!userNeed.trim()) {
-      setInputError("Please describe what you need help with first.");
+    if (!trimmedInput) {
+      setInputError(t.inputError);
       return;
     }
 
@@ -226,9 +237,8 @@ export default function AssistModal({
         const errorText = await response.text();
         console.error("AI function failed:", errorText);
 
-        setAiSummary([
-          "Savnac Assist is temporarily busy. Please try again shortly, or use the manual settings below.",
-        ]);
+        setAiError(t.aiUnavailable);
+        setAiSummary([]);
         setPendingSettings(null);
         setStep("recommendations");
         return;
@@ -241,6 +251,14 @@ export default function AssistModal({
         : result.summary
           ? [result.summary]
           : [];
+
+      if (summary.length === 0) {
+        setAiError(t.aiUnavailable);
+        setAiSummary([]);
+        setPendingSettings(null);
+        setStep("recommendations");
+        return;
+      }
 
       setAiSummary(summary);
       setPendingSettings({
@@ -255,9 +273,8 @@ export default function AssistModal({
     } catch (error) {
       console.error("AI recommendation failed", error);
 
-      setAiSummary([
-        "Savnac Assist is temporarily busy. Please try again shortly, or use the manual settings below.",
-      ]);
+      setAiError(t.aiFailed);
+      setAiSummary([]);
       setPendingSettings(null);
       setStep("recommendations");
     } finally {
