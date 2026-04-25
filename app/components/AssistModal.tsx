@@ -122,6 +122,19 @@ export default function AssistModal({
   }, []);
 
   useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsModalOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [setIsModalOpen]);
+  useEffect(() => {
     const root = document.documentElement;
 
     if (darkMode && highContrast) {
@@ -274,8 +287,14 @@ export default function AssistModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl bg-background px-10 py-8 shadow-xl">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+      onClick={() => setIsModalOpen(false)}
+    >
+      <div
+        className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl bg-background px-10 py-8 shadow-xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         <button
           onClick={() => setIsModalOpen(false)}
           className="absolute top-4 right-4 flex h-10 w-10 items-center justify-center rounded-md text-text-secondary transition hover:bg-black/5 hover:opacity-80"
@@ -283,7 +302,6 @@ export default function AssistModal({
         >
           X
         </button>
-
         <div className="flex flex-col items-center text-center">
           <img
             src="/images/welcome.svg"
