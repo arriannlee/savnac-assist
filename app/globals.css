@@ -21,13 +21,13 @@
 
 /* dark */
 [data-theme="dark"] {
-  --background: #121212;
+  --background: #1b1d23;
   --accent: #5a4ae0;
-  --surface: #1e1e1e;
-  --surface-variant: #2a2a2a;
-  --text: #ffffff;
-  --text-secondary: #b3b3b3;
-  --divider: #121212;
+  --surface: #242731;
+  --surface-variant: #2d313d;
+  --text: #f5f7fa;
+  --text-secondary: #b7bcc8;
+  --divider: #3a3f4b;
 }
 
 /* high contrast light */
@@ -43,13 +43,13 @@
 
 /* high contrast dark */
 [data-theme="high-contrast-dark"] {
-  --background: #000000;
-  --accent: #4338ca;
-  --surface: #141414;
-  --surface-variant: #1f1f1f;
+  --background: #111318;
+  --accent: #6b5cff;
+  --surface: #1b1f27;
+  --surface-variant: #262b35;
   --text: #ffffff;
-  --text-secondary: #dadada;
-  --divider: #000;
+  --text-secondary: #d8dde8;
+  --divider: #4a5060;
 }
 
 @theme inline {
@@ -77,7 +77,8 @@ h2 {
 p {
   font-size: calc(14px * var(--font-scale));
 }
-.nav-text, .assist-option-text {
+.nav-text,
+.assist-option-text {
   font-size: calc(14px * var(--font-scale));
 }
 .active {
