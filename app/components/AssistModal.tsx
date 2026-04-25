@@ -284,6 +284,7 @@ export default function AssistModal({
 
     setPendingSettings(null);
     setSettingsSaved(true);
+    setIsModalOpen(false);
   };
 
   return (
