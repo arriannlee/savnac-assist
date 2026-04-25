@@ -160,7 +160,7 @@ export default function AssistModal({
       opacity: 0,
       y: 20,
       scale: 0.98,
-      duration: 0.6,
+      duration: 0.4,
       ease: "power2.in",
       onComplete: () => {
         setIsModalOpen(false);
@@ -369,7 +369,7 @@ export default function AssistModal({
 
     setPendingSettings(null);
     setSettingsSaved(true);
-    setIsModalOpen(false);
+    handleClose();
   };
 
   // Rotate through prompt hints every 3 seconds
@@ -384,7 +384,7 @@ export default function AssistModal({
   return (
     <div
       ref={modalRef}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/10"
       onClick={handleClose}
     >
       <div
