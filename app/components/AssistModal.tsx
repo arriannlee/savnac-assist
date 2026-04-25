@@ -45,7 +45,7 @@ export default function AssistModal({
 
   const modalText = {
     en: {
-      welcome: `Hi ${name || "there"}, welcome to B&FC! 👋`,
+      welcome: `Hi ${name}, welcome to B&FC! 👋`,
       intro:
         "Before you get started, let’s make things a bit easier to read and navigate so everything works better for you. What challenges do you experience when reading or navigating online systems?",
       promptHints: [
@@ -85,7 +85,7 @@ export default function AssistModal({
       spanish: "Spanish",
     },
     es: {
-      welcome: "Hola, bienvenido a B&FC 👋",
+      welcome: `Hola ${name}, bienvenido a B&FC 👋`,
       intro:
         "Antes de comenzar, ajustemos la pantalla para que sea más fácil de leer y navegar. ¿Qué dificultades tienes al leer o navegar por sistemas en línea?",
       promptHints: [

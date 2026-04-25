@@ -145,6 +145,9 @@ export default function Home() {
                   <li>✓ Recommends tailored settings</li>
                   <li>✓ Saves your preferences</li>
                 </ul>
+                <p className="mt-30 ml-4 text-lg font-semibold leading-7">
+                  V1.0
+                </p>
               </div>
             </div>
 
