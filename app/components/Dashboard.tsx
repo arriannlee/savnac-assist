@@ -410,7 +410,7 @@ export default function Dashboard() {
                   digital PRACTICE xx00002 25/26{" "}
                 </p>
                 <h3 className="text-accent">
-                  formative Assignment: Digital Practice Due 23rd Oct
+                  Formative Assignment: Digital Practice Due 23rd Oct
                   10:00am{" "}
                 </h3>
                 <p className="text-sm text-text-secondary"></p>
