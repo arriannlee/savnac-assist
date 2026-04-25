@@ -150,6 +150,8 @@ export default function AssistModal({
     );
   }, []);
 
+  // Animate modal disappearance and then close
+
   const handleClose = () => {
     if (!modalRef.current) {
       setIsModalOpen(false);
@@ -187,6 +189,7 @@ export default function AssistModal({
   }, []);
 
   // Close modal on Escape key press
+
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -373,6 +376,7 @@ export default function AssistModal({
   };
 
   // Rotate through prompt hints every 3 seconds
+  
   useEffect(() => {
     const timer = setInterval(() => {
       setHintIndex((current) => (current + 1) % t.promptHints.length);

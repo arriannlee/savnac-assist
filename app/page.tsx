@@ -15,6 +15,7 @@ export default function Home() {
   const [loginError, setLoginError] = useState("");
   const loginRef = useRef<HTMLDivElement>(null);
   const appRef = useRef<HTMLDivElement>(null);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   const PROTOTYPE_PASSWORD = "savnac2026";
 
@@ -51,6 +52,19 @@ export default function Home() {
       },
     });
   };
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsSmallScreen(window.innerWidth < 1024);
+    };
+
+    checkScreenSize();
+
+    window.addEventListener("resize", checkScreenSize);
+
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
+
   useEffect(() => {
     if (!isLoggedIn || !appRef.current) return;
 
@@ -74,6 +88,27 @@ export default function Home() {
 
     return () => clearTimeout(modalTimer);
   }, [isLoggedIn]);
+
+  if (isSmallScreen) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-accent px-6 text-center text-white">
+        <div className="max-w-md space-y-4">
+          <img
+            src="/images/savnac-logo-bg.svg"
+            alt="Savnac Logo"
+            className="mx-auto w-16"
+          />
+          <h1 className="text-3xl font-bold">Screen Size Not Supported</h1>
+
+          <p className="text-base text-white/80">
+            {" "}
+            Savnac Assist is currently optimised for desktop and larger tablet
+            devices. Please access this prototype on a larger screen.
+          </p>
+        </div>
+      </main>
+    );
+  }
 
   if (!isLoggedIn) {
     return (
