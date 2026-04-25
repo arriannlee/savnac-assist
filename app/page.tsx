@@ -10,11 +10,24 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(true);
   const [language, setLanguage] = useState("en");
   const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
+
+  const PROTOTYPE_PASSWORD = "savnac2026";
 
   const handleLogin: React.SubmitEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
+    setLoginError("");
 
-    if (!name.trim()) return;
+    if (!name.trim()) {
+      setLoginError("Please enter your name");
+      return;
+    }
+
+    if (password !== PROTOTYPE_PASSWORD) {
+      setLoginError("Incorrect prototype password");
+      return;
+    }
 
     const formattedName = name
       .trim()
@@ -78,8 +91,13 @@ export default function Home() {
               <input
                 type="password"
                 placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full border border-gray-300 px-4 py-3 text-base outline-none transition focus:border-[#5a4ae0] focus:ring-2 focus:ring-[#5a4ae0]/20"
               />
+              {loginError && (
+                <p className="text-sm font-medium text-red-600">{loginError}</p>
+              )}
 
               <button
                 type="submit"
