@@ -9,15 +9,75 @@ import AssistModal from "./components/AssistModal";
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [language, setLanguage] = useState("en");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
   const loginRef = useRef<HTMLDivElement>(null);
   const appRef = useRef<HTMLDivElement>(null);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
 
   const PROTOTYPE_PASSWORD = "savnac2026";
+
+  const [language, setLanguage] = useState(() => {
+    if (typeof window === "undefined") return "en";
+
+    const savedSettings = localStorage.getItem("savnac-accessibility-settings");
+
+    if (!savedSettings) return "en";
+
+    try {
+      const parsedSettings = JSON.parse(savedSettings);
+      return parsedSettings.language || "en";
+    } catch {
+      return "en";
+    }
+  });
+
+  const applySettingsToDocument = (settings: {
+    darkMode?: boolean;
+    highContrast?: boolean;
+    dyslexicFont?: boolean;
+    fontStep?: number;
+  }) => {
+    const root = document.documentElement;
+
+    if (settings.darkMode && settings.highContrast) {
+      root.setAttribute("data-theme", "high-contrast-dark");
+    } else if (settings.darkMode) {
+      root.setAttribute("data-theme", "dark");
+    } else if (settings.highContrast) {
+      root.setAttribute("data-theme", "high-contrast-light");
+    } else {
+      root.removeAttribute("data-theme");
+    }
+
+    if (settings.dyslexicFont) {
+      root.setAttribute("data-font", "accessible");
+    } else {
+      root.removeAttribute("data-font");
+    }
+
+    const getFontScale = (step = 0) => {
+      switch (step) {
+        case -2:
+          return 0.9;
+        case -1:
+          return 0.95;
+        case 1:
+          return 1.15;
+        case 2:
+          return 1.3;
+        default:
+          return 1;
+      }
+    };
+
+    root.style.setProperty(
+      "--font-scale",
+      getFontScale(settings.fontStep).toString(),
+    );
+  };
 
   const handleLogin: React.SubmitEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
@@ -66,7 +126,18 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (!isLoggedIn || !appRef.current) return;
+    const savedSettings = localStorage.getItem("savnac-accessibility-settings");
+
+    if (savedSettings) {
+      const parsedSettings = JSON.parse(savedSettings);
+      applySettingsToDocument(parsedSettings);
+    }
+
+    setSettingsLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isLoggedIn || !settingsLoaded || !appRef.current) return;
 
     gsap.fromTo(
       appRef.current,
@@ -87,7 +158,7 @@ export default function Home() {
     }, 1200);
 
     return () => clearTimeout(modalTimer);
-  }, [isLoggedIn]);
+  }, [isLoggedIn, settingsLoaded]);
 
   if (isSmallScreen) {
     return (
@@ -108,6 +179,10 @@ export default function Home() {
         </div>
       </main>
     );
+  }
+
+  if (isLoggedIn && !settingsLoaded) {
+    return null;
   }
 
   if (!isLoggedIn) {
@@ -161,7 +236,7 @@ export default function Home() {
                   placeholder="Name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full border border-gray-300 px-4 py-3 text-base outline-none transition focus:border-[#5a4ae0] focus:ring-2 focus:ring-[#5a4ae0]/20"
+                  className="w-full border border-gray-300 bg-white px-4 py-3 text-gray-500 placeholder:text-gray-400 outline-none transition focus:border-[#5a4ae0] focus:ring-2 focus:ring-[#5a4ae0]/20"
                 />
 
                 <input
@@ -169,7 +244,7 @@ export default function Home() {
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full border border-gray-300 px-4 py-3 text-base outline-none transition focus:border-[#5a4ae0] focus:ring-2 focus:ring-[#5a4ae0]/20"
+                  className="w-full border border-gray-300 bg-white px-4 py-3 text-gray-500 placeholder:text-gray-400 outline-none transition focus:border-[#5a4ae0] focus:ring-2 focus:ring-[#5a4ae0]/20"
                 />
                 {loginError && (
                   <p className="text-sm font-medium text-red-600">

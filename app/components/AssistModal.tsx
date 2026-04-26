@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 
+// Prompt template for AI recommendations
+
 type AssistModalProps = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   language: string;
@@ -10,6 +12,7 @@ type AssistModalProps = {
   name: string;
 };
 
+// Function to call AI recommendations
 type AssistStep = "welcome" | "recommendations" | "manual";
 
 type AccessibilitySettings = {
@@ -42,7 +45,10 @@ export default function AssistModal({
   const [inputError, setInputError] = useState("");
   const [aiError, setAiError] = useState("");
   const modalRef = useRef<HTMLDivElement>(null);
+  const [originalSettings, setOriginalSettings] =
+    useState<AccessibilitySettings | null>(null);
 
+  // Prompt template for AI recommendations EN ES version
   const modalText = {
     en: {
       welcome: `Hi ${name}, welcome to B&FC! 👋`,
@@ -78,7 +84,6 @@ export default function AssistModal({
       dyslexicFont: "Dyslexic friendly font",
       darkMode: "Dark mode",
       language: "Language selection",
-      saved: "Preferences saved.",
       previewFallback:
         "These settings may improve your experience. You can preview them before applying changes.",
       english: "English UK",
@@ -118,7 +123,6 @@ export default function AssistModal({
       dyslexicFont: "Fuente para dislexia",
       darkMode: "Modo oscuro",
       language: "Selección de idioma",
-      saved: "Preferencias guardadas.",
       previewFallback:
         "Estos ajustes pueden mejorar tu experiencia. Puedes verlos antes de aplicar los cambios.",
       english: "Inglés Reino Unido",
@@ -129,7 +133,6 @@ export default function AssistModal({
   const t = modalText[language as "en" | "es"];
 
   // Animate modal appearance with GSAP
-
   useEffect(() => {
     if (!modalRef.current) return;
 
@@ -150,28 +153,35 @@ export default function AssistModal({
     );
   }, []);
 
-  // Animate modal disappearance and then close
+  // Save original settings before applying AI recommendations for preview
+  const saveOriginalSettings = () => {
+    if (originalSettings) return;
 
-  const handleClose = () => {
-    if (!modalRef.current) {
-      setIsModalOpen(false);
-      return;
-    }
-
-    gsap.to(modalRef.current, {
-      opacity: 0,
-      y: 20,
-      scale: 0.98,
-      duration: 0.4,
-      ease: "power2.in",
-      onComplete: () => {
-        setIsModalOpen(false);
-      },
+    setOriginalSettings({
+      darkMode,
+      highContrast,
+      dyslexicFont,
+      fontStep,
+      language,
     });
   };
 
-  //  Load saved settings from localStorage on mount and apply them
+  // Animate modal disappearance and then close
+  const handleClose = () => {
+    if (originalSettings) {
+      setDarkMode(originalSettings.darkMode);
+      setHighContrast(originalSettings.highContrast);
+      setDyslexicFont(originalSettings.dyslexicFont);
+      setFontStep(originalSettings.fontStep);
+      setLanguage(originalSettings.language);
+      setOriginalSettings(null);
+      setPendingSettings(null);
+    }
 
+    animateClose();
+  };
+
+  //  Load saved settings from localStorage on mount and apply them
   useEffect(() => {
     const savedSettings = localStorage.getItem("savnac-accessibility-settings");
 
@@ -189,7 +199,6 @@ export default function AssistModal({
   }, []);
 
   // Close modal on Escape key press
-
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -205,7 +214,6 @@ export default function AssistModal({
   }, [setIsModalOpen]);
 
   // Apply dark mode and high contrast by toggling a data attribute on the root element
-
   useEffect(() => {
     const root = document.documentElement;
 
@@ -221,7 +229,6 @@ export default function AssistModal({
   }, [darkMode, highContrast]);
 
   // Apply dyslexic-friendly font by toggling a data attribute on the root element
-
   useEffect(() => {
     const root = document.documentElement;
 
@@ -233,7 +240,6 @@ export default function AssistModal({
   }, [dyslexicFont]);
 
   // Map fontStep to actual CSS scale values and apply as a CSS variable
-
   useEffect(() => {
     const getFontScale = (step: number) => {
       switch (step) {
@@ -258,8 +264,26 @@ export default function AssistModal({
     );
   }, [fontStep]);
 
-  // Function to call AI recommendations
+  // Animate modal disappearance and then close
+  const animateClose = () => {
+    if (!modalRef.current) {
+      setIsModalOpen(false);
+      return;
+    }
 
+    gsap.to(modalRef.current, {
+      opacity: 0,
+      y: 20,
+      scale: 0.98,
+      duration: 0.4,
+      ease: "power2.in",
+      onComplete: () => {
+        setIsModalOpen(false);
+      },
+    });
+  };
+
+  // Function to call AI recommendations
   const handleShowRecommendations = async () => {
     setAiError("");
 
@@ -338,8 +362,12 @@ export default function AssistModal({
       setIsAiLoading(false);
     }
   };
+
+  // Apply pending settings for preview without saving them
   const handlePreviewRecommendations = () => {
     if (!pendingSettings) return;
+
+    saveOriginalSettings();
 
     setDarkMode(pendingSettings.darkMode);
     setHighContrast(pendingSettings.highContrast);
@@ -370,13 +398,13 @@ export default function AssistModal({
       JSON.stringify(settings),
     );
 
+    setOriginalSettings(null);
     setPendingSettings(null);
     setSettingsSaved(true);
-    handleClose();
+    animateClose();
   };
 
   // Rotate through prompt hints every 3 seconds
-
   useEffect(() => {
     const timer = setInterval(() => {
       setHintIndex((current) => (current + 1) % t.promptHints.length);
@@ -496,12 +524,6 @@ export default function AssistModal({
                 </div>
               )}
 
-              {settingsSaved && (
-                <p className="mt-1 mb-2 text-sm text-text-secondary">
-                  {t.saved}
-                </p>
-              )}
-
               <p className="assist-option-text text-text-secondary opacity-80">
                 {t.preferManual}{" "}
                 <button
@@ -547,7 +569,10 @@ export default function AssistModal({
                       max={2}
                       step={1}
                       value={fontStep}
-                      onChange={(e) => setFontStep(parseInt(e.target.value))}
+                      onChange={(e) => {
+                        saveOriginalSettings();
+                        setFontStep(parseInt(e.target.value));
+                      }}
                       className="slider w-full"
                     />
 
@@ -564,7 +589,10 @@ export default function AssistModal({
                     type="checkbox"
                     className="toggle-switch"
                     checked={highContrast}
-                    onChange={(e) => setHighContrast(e.target.checked)}
+                    onChange={(e) => {
+                      saveOriginalSettings();
+                      setHighContrast(e.target.checked);
+                    }}
                   />
                 </div>
 
@@ -576,7 +604,10 @@ export default function AssistModal({
                   <input
                     type="checkbox"
                     checked={dyslexicFont}
-                    onChange={(e) => setDyslexicFont(e.target.checked)}
+                    onChange={(e) => {
+                      saveOriginalSettings();
+                      setDyslexicFont(e.target.checked);
+                    }}
                     className="toggle-switch"
                   />
                 </div>
@@ -589,7 +620,10 @@ export default function AssistModal({
                   <input
                     type="checkbox"
                     checked={darkMode}
-                    onChange={(e) => setDarkMode(e.target.checked)}
+                    onChange={(e) => {
+                      saveOriginalSettings();
+                      setDarkMode(e.target.checked);
+                    }}
                     className="toggle-switch"
                   />
                 </div>
@@ -603,7 +637,10 @@ export default function AssistModal({
                     <select
                       className="min-w-[140px] appearance-none rounded-md border border-divider bg-background px-3 py-1.5 assist-option-text text-text focus:outline-none focus:ring-2 focus:ring-accent"
                       value={language}
-                      onChange={(e) => setLanguage(e.target.value)}
+                      onChange={(e) => {
+                        saveOriginalSettings();
+                        setLanguage(e.target.value);
+                      }}
                     >
                       <option value="en">{t.english}</option>
                       <option value="es">{t.spanish}</option>
@@ -624,12 +661,6 @@ export default function AssistModal({
                   {t.apply}
                 </button>
               </div>
-
-              {settingsSaved && (
-                <p className="mt-1 mb-2 text-sm text-text-secondary">
-                  {t.saved}
-                </p>
-              )}
 
               <p className="assist-option-text text-text-secondary opacity-80">
                 {t.needAssistance}{" "}
